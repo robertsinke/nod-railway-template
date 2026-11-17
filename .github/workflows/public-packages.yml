@@ -1,0 +1,17 @@
+name: public packages
+on: workflow_dispatch
+permissions:
+  packages: write
+jobs:
+  public:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make images public
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for name in nod-railway-server nod-railway-workspace nod-railway-browser; do
+            code=$(curl -sS -o /tmp/pkg.json -w '%{http_code}' -X PATCH               -H "Authorization: Bearer $GH_TOKEN"               -H "Accept: application/vnd.github+json"               "https://api.github.com/user/packages/container/${name}"               -d '{"visibility":"public"}')
+            echo "$name $code"
+            python3 -c 'import json; d=json.load(open("/tmp/pkg.json")); print(d.get("visibility"), d.get("message"))'
+          done
