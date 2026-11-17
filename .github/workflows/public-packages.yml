@@ -6,17 +6,8 @@ jobs:
   public:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Make images public
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "list user"
-          curl -sS -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/user/packages?package_type=container" | head -c 500
-          echo
-          echo "list repo"
-          curl -sS -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/robertsinke/nod-railway-template/packages?package_type=container" | head -c 800
-          echo
-          for name in nod-railway-server nod-railway-workspace nod-railway-browser; do
-            code=$(curl -sS -o /tmp/pkg.json -w '%{http_code}' -X PATCH               -H "Authorization: Bearer $GH_TOKEN"               -H "Accept: application/vnd.github+json"               "https://api.github.com/repos/robertsinke/nod-railway-template/packages/container/${name}"               -d '{"visibility":"public"}')
-            echo "repo $name $code $(python3 -c 'import json; d=json.load(open("/tmp/pkg.json")); print(d.get("visibility"), d.get("message"))')"
-          done
+        run: python3 scripts/make_public.py
