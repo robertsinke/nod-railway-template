@@ -66,6 +66,9 @@ function authorize(header) {
     };
   }
   if (user === 'node') {
+    if (workdir === '/var/tmp') {
+      return { file: cmd[0], args: cmd.slice(1), uid: NODE_UID, gid: NODE_GID, cwd: '/var/tmp', home: '/home/node' };
+    }
     if (typeof workdir !== 'string' || !threadDir.test(workdir)) return 'workdir must be a thread workspace';
     const cwd = join(workspaceRoot, workdir.slice('/workspace/'.length));
     return { file: cmd[0], args: cmd.slice(1), uid: NODE_UID, gid: NODE_GID, cwd, home: '/home/node', create: true };
