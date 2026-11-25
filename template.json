@@ -6,7 +6,7 @@
       "icon": "https://raw.githubusercontent.com/n8n-io/nod/nod-v0.8.0/public/nod-logo.png",
       "source": {
         "$note": "Upstream deployment/self-host/Dockerfile + relay/docker shim + images/server-entry.sh (chowns the volume, derives NOD_VAULT_KEY, writes the relay config, drops to node).",
-        "image": "ghcr.io/hmseeb/nod-railway-server:0.8.0"
+        "image": "ghcr.io/inhouse-works/nod-railway-server:0.9.7"
       },
       "deploy": {
         "$note": "No healthcheckPath: Nod 403s any Host other than NOD_PUBLIC_URL's (src/server/access.ts:90), and Railway's prober sends Host: healthcheck.railway.app; /api/health also requires the bearer token. Restart on failure covers a server that boots before Postgres.",
@@ -60,7 +60,7 @@
       "icon": "https://cdn.simpleicons.org/linux",
       "source": {
         "$note": "Upstream Dockerfile.workspace (Python, Node, LibreOffice, ffmpeg, OCR) + nod-relay-agent.",
-        "image": "ghcr.io/hmseeb/nod-railway-workspace:0.8.0"
+        "image": "ghcr.io/inhouse-works/nod-railway-workspace:0.9.7"
       },
       "deploy": { "restartPolicyType": "ALWAYS" },
       "volumeMounts": { "mountPath": "/workspace" },
@@ -73,7 +73,7 @@
       "icon": "https://cdn.simpleicons.org/googlechrome",
       "source": {
         "$note": "Upstream Dockerfile.browser (Chromium under Xvfb, agent-browser worker) + nod-relay-agent. Sign-ins the agent makes persist in /data.",
-        "image": "ghcr.io/hmseeb/nod-railway-browser:0.8.0"
+        "image": "ghcr.io/inhouse-works/nod-railway-browser:0.9.7"
       },
       "deploy": { "restartPolicyType": "ALWAYS" },
       "volumeMounts": { "mountPath": "/data" },

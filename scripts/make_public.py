@@ -14,14 +14,15 @@ def gql(query, variables=None):
     with urllib.request.urlopen(req) as res:
         return json.load(res)
 
+owner, name = os.environ.get("GITHUB_REPOSITORY", "inhouse-works/nod-railway-template").split("/", 1)
 data = gql("""
-query {
+query($owner:String!, $name:String!) {
   viewer { login }
-  repository(owner: "robertsinke", name: "nod-railway-template") {
+  repository(owner: $owner, name: $name) {
     packages(first: 20, packageType: DOCKER) { nodes { id name } }
   }
 }
-""")
+""", {"owner": owner, "name": name})
 print("errors", [e.get("message") for e in data.get("errors") or []])
 repo = ((data.get("data") or {}).get("repository") or {})
 nodes = (repo.get("packages") or {}).get("nodes") or []
