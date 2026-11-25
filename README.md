@@ -12,7 +12,7 @@ Upstream's server drives the workspace and browser containers only through `dock
 
 - `relay/docker` replaces the docker CLI in the server image. It forwards exactly those two exec shapes to the matching service.
 - `relay/nod-relay-agent.mjs` runs as root in Workspace and Browser. It checks a shared token and applies upstream `docker-proxy.mjs`'s allow rules. It drops to the right uid and returns stdio and the exit code.
-- `images/` wraps upstream's own Dockerfiles. `.github/workflows/images.yml` builds them at the tag in `NOD_VERSION` and pushes `ghcr.io/inhouse-works/nod-railway-{server,workspace,browser}`.
+- `images/` wraps upstream's own Dockerfiles. `.github/workflows/images.yml` builds them at the tag in `NOD_VERSION` and pushes `ghcr.io/robertsinke/nod-railway-{server,workspace,browser}`.
 
 ## Tests
 

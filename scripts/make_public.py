@@ -14,7 +14,7 @@ def gql(query, variables=None):
     with urllib.request.urlopen(req) as res:
         return json.load(res)
 
-owner, name = os.environ.get("GITHUB_REPOSITORY", "inhouse-works/nod-railway-template").split("/", 1)
+owner, name = os.environ.get("GITHUB_REPOSITORY", "robertsinke/nod-railway-template").split("/", 1)
 data = gql("""
 query($owner:String!, $name:String!) {
   viewer { login }
