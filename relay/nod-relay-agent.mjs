@@ -55,10 +55,13 @@ function authorize(header) {
     return 'bad command';
   if (mode === 'browser') {
     if (user !== 'node' || (workdir !== undefined && workdir !== '')) return 'browser runs as node only';
-    if (JSON.stringify(cmd) !== JSON.stringify(['node', '/app/bridge.mjs'])) return 'browser runs the bridge only';
+    // Nod 0.10.1+ also opens a persistent multiplexed bridge (upstream docker-proxy.mjs allows both).
+    const shape = JSON.stringify(cmd);
+    const multiplex = shape === JSON.stringify(['node', '/app/bridge.mjs', '--multiplex']);
+    if (!multiplex && shape !== JSON.stringify(['node', '/app/bridge.mjs'])) return 'browser runs the bridge only';
     return {
       file: testing ? process.execPath : 'node',
-      args: [bridgePath],
+      args: multiplex ? [bridgePath, '--multiplex'] : [bridgePath],
       uid: NODE_UID,
       gid: NODE_GID,
       cwd: testing ? undefined : '/app',

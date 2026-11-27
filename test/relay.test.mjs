@@ -54,7 +54,7 @@ before(async () => {
   await startAgent('browser', 47102, { NOD_RELAY_BROWSER_BRIDGE: join(scratch, 'bridge.mjs') });
   writeFileSync(
     join(scratch, 'bridge.mjs'),
-    "process.stdin.on('data', d => process.stdout.write('bridge:' + d));",
+    "const tag = process.argv.includes('--multiplex') ? 'bridge+mux:' : 'bridge:'; process.stdin.on('data', d => process.stdout.write(tag + d));",
   );
 });
 after(() => agents.forEach((a) => a.kill('SIGKILL')));
@@ -166,6 +166,17 @@ test('browser exec only runs the bridge', async () => {
   const bad = await docker(['exec', '-i', '--user', 'node', 'nod-browser', '/bin/sh', '-c', 'id']);
   assert.notEqual(bad.code, 0);
   assert.equal(bad.stdout.length, 0);
+});
+
+test('browser exec allows the multiplexed bridge and nothing else', async () => {
+  const mux = await docker(['exec', '-i', '--user', 'node', 'nod-browser', 'node', '/app/bridge.mjs', '--multiplex'], {
+    input: 'ping',
+  });
+  assert.equal(mux.code, 0, mux.stderr);
+  assert.equal(mux.stdout.toString(), 'bridge+mux:ping');
+  const extra = await docker(['exec', '-i', '--user', 'node', 'nod-browser', 'node', '/app/bridge.mjs', '--inspect']);
+  assert.notEqual(extra.code, 0);
+  assert.equal(extra.stdout.length, 0);
 });
 
 test('connected-CLI users must use /var/tmp', async () => {

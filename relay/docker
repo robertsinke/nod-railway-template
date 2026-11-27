@@ -5,6 +5,7 @@
 // and src/providers/container-browser/index.ts):
 //   docker exec -i --user U --workdir W nod-workspace /usr/bin/python3 -I -u -c ...
 //   docker exec -i --user node nod-browser node /app/bridge.mjs
+//   docker exec -i --user node nod-browser node /app/bridge.mjs --multiplex   (0.10.1+)
 // This shim forwards exactly that shape to nod-relay-agent on the matching Railway
 // service and reproduces docker's stdio and exit code. Anything else exits 125.
 // Config comes from $DOCKER_CONFIG/nod-relay.json, because Nod passes the child only
